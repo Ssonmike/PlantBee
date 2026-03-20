@@ -88,8 +88,25 @@ export default function ScannerClient() {
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      setImageData(event.target?.result as string);
-      setState("preview");
+      const dataUrl = event.target?.result as string;
+      // Compress via canvas to ensure compatible format (JPEG) and reasonable size
+      const img = new window.Image();
+      img.onload = () => {
+        const MAX = 1280;
+        let { width, height } = img;
+        if (width > MAX || height > MAX) {
+          const ratio = Math.min(MAX / width, MAX / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d")?.drawImage(img, 0, 0, width, height);
+        setImageData(canvas.toDataURL("image/jpeg", 0.85));
+        setState("preview");
+      };
+      img.src = dataUrl;
     };
     reader.readAsDataURL(file);
   }
@@ -101,6 +118,7 @@ export default function ScannerClient() {
     setError("");
 
     try {
+      const mimeType = imageData.match(/^data:(image\/\w+);base64,/)?.[1] ?? "image/jpeg";
       const res = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -108,7 +126,7 @@ export default function ScannerClient() {
           imageBase64: imageData,
           scanType: mode,
           userPlantId: userPlantId ?? undefined,
-          mimeType: "image/jpeg",
+          mimeType,
         }),
       });
 

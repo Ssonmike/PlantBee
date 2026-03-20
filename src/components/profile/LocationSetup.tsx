@@ -48,7 +48,7 @@ export default function LocationSetup({ currentLocation }: LocationSetupProps) {
           const countryCode = geoData.address?.country_code?.toUpperCase() ?? "";
 
           // Save to backend
-          await fetch("/api/location", {
+          const saveRes = await fetch("/api/location", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -60,17 +60,28 @@ export default function LocationSetup({ currentLocation }: LocationSetupProps) {
             }),
           });
 
+          if (!saveRes.ok) {
+            const errData = await saveRes.json().catch(() => ({}));
+            throw new Error(errData.error ?? "Error al guardar la ubicación");
+          }
+
           setDone(true);
           // Refresh page to show new location
           window.location.reload();
-        } catch {
-          setError("Error al guardar la ubicación");
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Error al guardar la ubicación");
         } finally {
           setLoading(false);
         }
       },
-      () => {
-        setError("No se pudo obtener tu ubicación. Verifica los permisos.");
+      (posErr) => {
+        if (posErr.code === 1) {
+          setError("Permiso de ubicación denegado. Ve a Configuración > Privacidad > Ubicación y permite el acceso al navegador.");
+        } else if (posErr.code === 2) {
+          setError("No se pudo determinar tu ubicación. Asegúrate de tener GPS o conexión activa.");
+        } else {
+          setError("Tiempo de espera agotado. Inténtalo de nuevo.");
+        }
         setLoading(false);
       }
     );
