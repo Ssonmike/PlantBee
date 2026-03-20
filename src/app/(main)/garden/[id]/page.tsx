@@ -7,7 +7,7 @@ import Header from "@/components/layout/Header";
 import Badge from "@/components/ui/Badge";
 import { getCareTypeEmoji, getCareTypeLabel, getRelativeDateLabel, getHealthStatusLabel } from "@/lib/utils";
 import type { CareType } from "@/types";
-import { getIssueTypeLabel, getIssueTypeEmoji } from "@/lib/ai";
+import { getIssueTypeLabel, getIssueTypeEmoji } from "@/lib/plant-utils";
 import PlantDetailActions from "@/components/garden/PlantDetailActions";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {

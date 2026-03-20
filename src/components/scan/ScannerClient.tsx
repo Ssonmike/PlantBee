@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { PlantIdentificationResult, PlantDiagnosisResult } from "@/types";
-import { getIssueTypeEmoji, getIssueTypeLabel } from "@/lib/ai";
+import { getIssueTypeEmoji, getIssueTypeLabel } from "@/lib/plant-utils";
 
 type ScanMode = "identify" | "diagnose";
 type ScanState = "camera" | "preview" | "loading" | "result" | "error";
