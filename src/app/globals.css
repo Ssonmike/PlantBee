@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    @apply antialiased;
+    /* Prevent zoom on iOS when focusing inputs */
+    touch-action: manipulation;
+  }
+
+  body {
+    @apply bg-brand-50 text-gray-900 min-h-screen;
+    /* Safe area insets for iPhone notch/home indicator */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Better scrolling on mobile */
+  .scroll-smooth {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-brand-200 rounded-full;
+  }
+}
+
+@layer components {
+  /* Primary button */
+  .btn-primary {
+    @apply bg-brand-600 text-white font-semibold py-3 px-6 rounded-2xl
+           active:scale-95 transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed
+           shadow-sm hover:bg-brand-700;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply bg-white text-brand-700 font-semibold py-3 px-6 rounded-2xl
+           border-2 border-brand-200 active:scale-95 transition-all duration-150
+           disabled:opacity-50;
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply text-brand-600 font-medium py-2 px-4 rounded-xl
+           active:bg-brand-50 transition-all duration-150;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100;
+  }
+
+  /* Input */
+  .input {
+    @apply w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3
+           text-gray-900 placeholder-gray-400 text-base
+           focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100
+           transition-colors duration-150;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
+  }
+
+  /* Bottom nav safe area */
+  .pb-nav {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
+
+  /* Section title */
+  .section-title {
+    @apply text-lg font-bold text-gray-900 mb-3;
+  }
+}
+
+@layer utilities {
+  /* Touch feedback */
+  .touch-feedback {
+    @apply active:scale-95 transition-transform duration-100;
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md;
+  }
+
+  /* Gradient brand */
+  .gradient-brand {
+    @apply bg-gradient-to-br from-brand-500 to-brand-700;
+  }
+
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent;
+  }
+}
+
+/* Camera overlay styles */
+.camera-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #000;
+}
+
+.camera-viewfinder {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* Loading skeleton */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0fdf4 25%, #dcfce7 50%, #f0fdf4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
