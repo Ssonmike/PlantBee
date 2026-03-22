@@ -7,6 +7,23 @@ interface Props {
   plantId: string;
 }
 
+export function ArchivePlantButton({ plantId }: { plantId: string }) {
+  return (
+    <button
+      className="w-full text-red-500 text-sm font-medium py-3 rounded-2xl border border-red-200 hover:bg-red-50 transition-colors"
+      onClick={() => {
+        if (confirm("¿Archivar esta planta? Podrás recuperarla más adelante.")) {
+          fetch(`/api/plants/${plantId}`, { method: "DELETE" }).then(() => {
+            window.location.href = "/garden";
+          });
+        }
+      }}
+    >
+      🗂️ Archivar planta
+    </button>
+  );
+}
+
 export default function PlantDetailActions({ plantId }: Props) {
   const [open, setOpen] = useState(false);
 

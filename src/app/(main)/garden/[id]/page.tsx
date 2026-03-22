@@ -8,18 +8,20 @@ import Badge from "@/components/ui/Badge";
 import { getCareTypeEmoji, getCareTypeLabel, getRelativeDateLabel, getHealthStatusLabel } from "@/lib/utils";
 import type { CareType } from "@/types";
 import { getIssueTypeLabel, getIssueTypeEmoji } from "@/lib/plant-utils";
-import PlantDetailActions from "@/components/garden/PlantDetailActions";
+import PlantDetailActions, { ArchivePlantButton } from "@/components/garden/PlantDetailActions";
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   return { title: "Detalle de planta" };
 }
 
-export default async function PlantDetailPage({ params }: { params: { id: string } }) {
+export default async function PlantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
+  const { id } = await params;
+
   const plant = await db.userPlant.findFirst({
-    where: { id: params.id, userId: session.user.id },
+    where: { id, userId: session.user.id },
     include: {
       plant: { include: { careRequirements: true } },
       garden: true,
@@ -236,18 +238,7 @@ export default async function PlantDetailPage({ params }: { params: { id: string
 
         {/* Delete / Archive */}
         <div className="pb-6">
-          <button
-            className="w-full text-red-500 text-sm font-medium py-3 rounded-2xl border border-red-200 hover:bg-red-50 transition-colors"
-            onClick={() => {
-              if (confirm("¿Archivar esta planta? Podrás recuperarla más adelante.")) {
-                fetch(`/api/plants/${plant.id}`, { method: "DELETE" }).then(() => {
-                  window.location.href = "/garden";
-                });
-              }
-            }}
-          >
-            🗂️ Archivar planta
-          </button>
+          <ArchivePlantButton plantId={plant.id} />
         </div>
       </div>
     </div>
