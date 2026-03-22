@@ -115,7 +115,8 @@ export async function identifyPlant(
   const content = response.content[0];
   if (content.type !== "text") throw new Error("Unexpected response type from Claude");
 
-  const result = JSON.parse(content.text) as PlantIdentificationResult;
+  const text = content.text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
+  const result = JSON.parse(text) as PlantIdentificationResult;
   return result;
 }
 
@@ -155,7 +156,8 @@ export async function diagnosePlant(
   const content = response.content[0];
   if (content.type !== "text") throw new Error("Unexpected response type from Claude");
 
-  const result = JSON.parse(content.text) as PlantDiagnosisResult;
+  const text = content.text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
+  const result = JSON.parse(text) as PlantDiagnosisResult;
   return result;
 }
 
